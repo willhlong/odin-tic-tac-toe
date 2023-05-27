@@ -1,115 +1,73 @@
 const GameBoard = (() => {
-    let _boardSquares = [
-        'O', 'O', 'X', 
-        'O', 'O', 'X', 
-        'X', 'X', 'O'
+    let boardArray = 
+    [ 
+        ' ', ' ', ' ',
+        ' ', ' ', ' ',
+        ' ', ' ', ' '
     ];
-
-    // FIXME: Figure out what method to use for registering square clicked by player
-    const _updateBoard = (index, playerSymbol) => {
-        
-        if(_boardSquares[index] !== ' ') {
-            _boardSquares[index] = playerSymbol;
-            return true;
-        }
-        else {
-            return false;
-        }
-    };
-
-    const drawBoard = () => {
-        const board = document.querySelector('.game-board');
-        for (let i = 0; i < _boardSquares.length; i++) {
-            const square = document.createElement('div');
-            square.classList.add('game-square');
-            square.innerText = _boardSquares[i];
-            board.appendChild(square);
-        }
-    };
-
-    const resetBoard = () => {
-        _boardSquares = [
-            ' ', ' ', ' ',
-            ' ', ' ', ' ',
-            ' ', ' ', ' '
-        ];
+    const draw = () => {
+        //FIXME: add draw to screen functionality
     }
-
+    const updateBoard = (position, symbol) => {
+        boardArray[position - 1] = symbol;
+    }
+    const reset = () => {
+        //FIXME: clear board array
+    }
     const winner = () => {
-        if      (_boardSquares[0] === _boardSquares[1] && _boardSquares[1] === _boardSquares[2]) return true;
-        else if (_boardSquares[3] === _boardSquares[4] && _boardSquares[4] === _boardSquares[5]) return true;
-        else if (_boardSquares[6] === _boardSquares[7] && _boardSquares[7] === _boardSquares[8]) return true;
-        else if (_boardSquares[0] === _boardSquares[3] && _boardSquares[3] === _boardSquares[6]) return true;
-        else if (_boardSquares[1] === _boardSquares[4] && _boardSquares[4] === _boardSquares[7]) return true;
-        else if (_boardSquares[2] === _boardSquares[5] && _boardSquares[5] === _boardSquares[8]) return true;
-        else if (_boardSquares[0] === _boardSquares[4] && _boardSquares[4] === _boardSquares[8]) return true;
-        else if (_boardSquares[2] === _boardSquares[4] && _boardSquares[6] === _boardSquares[6]) return true;
-        else return false;
-    };
-
-    return {drawBoard, resetBoard, winner};
+        if      (boardArray[0] === boardArray[1] === boardArray[2]) {return true;}
+        else if (boardArray[0] === boardArray[3] === boardArray[6]) {return true;}
+        else if (boardArray[0] === boardArray[4] === boardArray[8]) {return true;}
+        else if (boardArray[1] === boardArray[4] === boardArray[7]) {return true;}
+        else if (boardArray[2] === boardArray[5] === boardArray[8]) {return true;}
+        else if (boardArray[3] === boardArray[4] === boardArray[5]) {return true;}
+        else if (boardArray[6] === boardArray[7] === boardArray[8]) {return true;}
+        else if (boardArray[2] === boardArray[4] === boardArray[6]) {return true;}
+    }
+    
 })();
 
 const GameController = (() => {
-    let _counter = 0;
 
-    const getPlayerSelection = () => {
-    }
-    const isGameOver = () => {
-        if (GameBoard.winner()) {
-            if (_counter % 2 === 0) {
-                console.log("Player 1 wins!");
-            }
-            else {
-                console.log("Player 2 wins!");
-            }
+    let _turnCount = 1;
+    const _playerOne = Player(1, 'X');
+    const _playerTwo = Player(2, 'O');
+    const _getPlayerInput = () => {
+        if (_turnCount % 2 === 1) {
+            return prompt("Player 1, please pick a square...");
         }
+        else {
+            return prompt("Player 2, please pick a square...");
+        }        
+    };
+    const _turnAdvnace = () => {
+        console.log("Next turn (turn number " + _turnCount);
+        _incrementTurnCounter();
     }
-    const printTitleScreen = () => {
+    const _incrementTurnCounter = () => ++_turnCount;
+    const getTurnCount = () => _turnCount;
 
+    const startGame = () => {
+        GameBoard.reset();
+        GameBoard.draw();
+        _turnCount = 0;
     }
-    const startGame = (gameType) => {
-        GameBoard.resetBoard();
-        GameBoard.drawBoard();
-
+    const winner = () => GameBoard.winner();
+    
+    const takeTurn = () => {
+        let currentPlayer;
+        _turnCount % 2 === 1 ? currentPlayer = _playerOne : currentPlayer = _playerTwo;
+        GameBoard.updateBoard(_getPlayerInput(), currentPlayer.getSymbol());
+        _turnAdvnace();
     }
 })();
 
-const PlayerFactory = (number, isHuman) => {
-    let _playerSymbol;
-    if (number === 1) {
-        _playerSymbol = 'X';
-    }
-    else {
-        _playerSymbol = 'O';
-    }
-
-    const getNumber = () => number;
-    const getPlayerSymbol = () => _playerSymbol;
+const Player = (number, symbol) => {
     
+    const getNumber = () => number;
+    const getSymbol = () => symbol;
 
-    return {getNumber, getPlayerSymbol};
+    return {getNumber, getSymbol};
 };
 
-
-
-/*
-    Game Controller:
-     - Print title screen
-     - start game based on user selection (player vs player or player vs ai)
-     - check for winner
-     - announce winner
-     - announce turn number
-     - prompt current player for input
-
-    Game Board:
-     - Keep track of plays (array)
-     - check for winner when requested by game controller and report back to game controller
-     - update internal board array based on player choices
-     - draw game board after each turn
-     - check valid play (i.e. not already occupied)
-
-    Player:
-     - track unique player id per player
-
- */
+GameController.startGame();
