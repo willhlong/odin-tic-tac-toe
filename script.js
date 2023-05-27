@@ -61,7 +61,12 @@ const GameController = (() => {
         GameBoard.draw();
         _turnCount = 1;
     }
-    const winner = () => GameBoard.winner();
+
+    const declareWinner = () => {
+        let currentPlayer;
+        _turnCount % 2 === 1 ? currentPlayer = _playerOne : currentPlayer = _playerTwo;
+        console.log("Player " + currentPlayer.getNumber() + " wins!");
+    }
     
     const takeTurn = () => {
         let currentPlayer;
@@ -70,10 +75,11 @@ const GameController = (() => {
         GameBoard.draw();
         _turnAdvnace();
     }
-    return {startGame, winner, takeTurn, getTurnCount};
+    return {startGame, declareWinner, takeTurn, getTurnCount};
 })();
 
 GameController.startGame();
-while (!GameController.winner()) {
+while (!GameBoard.winner()) {
     GameController.takeTurn();
 }
+GameController.declareWinner();
