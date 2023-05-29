@@ -1,18 +1,56 @@
+.header {
+    text-align: center;
+}
 .game-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 100px;
     margin: auto;
-    margin-top: 25%;
     width: 300px;
     height: 300px;
 }
 
 .game-square {
     font-family: 'Mynerve', sans-serif;
-    border: 2px solid black;
+    /* border: 2px solid black; */
     font-size: 4rem;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#square1 {
+    border-bottom: 4px solid black;
+    border-right: 4px solid black;
+}
+
+#square2 {
+    border-bottom: 4px solid black;
+    border-right: 4px solid black;
+}
+
+#square3 {
+    border-bottom: 4px solid black;
+}
+
+#square4 {
+    border-right: 4px solid black;
+    border-bottom: 4px solid black;
+}
+
+#square5 {
+    border-bottom: 4px solid black;
+    border-right: 4px solid black;
+}
+
+#square6 {
+    border-bottom: 4px solid black;
+}
+
+#square7 {
+    border-right: 4px solid black;
+}
+
+#square8 {
+    border-right: 4px solid black;
 }

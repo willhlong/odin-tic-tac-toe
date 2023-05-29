@@ -78,8 +78,8 @@ const GameController = (() => {
     return {startGame, declareWinner, takeTurn, getTurnCount};
 })();
 
-GameController.startGame();
-while (!GameBoard.winner()) {
-    GameController.takeTurn();
-}
-GameController.declareWinner();
+// GameController.startGame();
+// while (!GameBoard.winner() && GameController.getTurnCount() <= 9) {
+//     GameController.takeTurn();
+// }
+// GameController.declareWinner();
