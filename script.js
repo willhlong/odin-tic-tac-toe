@@ -27,9 +27,11 @@ const GameBoard = (() => {
     }
     const updateBoard = (position) => {
         let player = GameController.getCurrentPlayer();
-        boardArray[position] = player.getSymbol();
+        if (boardArray[position] == ' ') {
+            boardArray[position] = player.getSymbol();
+            GameController.turnAdvnace();
+        }
         draw();
-        GameController.turnAdvnace();
     }
     const reset = () => {
         //FIXME: clear board array
@@ -49,24 +51,43 @@ const GameBoard = (() => {
 })();
 
 const GameController = (() => {
-
+///////////////////////////////////
+// PRIVATE METHODS AND ATTIBUTES //
+///////////////////////////////////
     let _turnCount = 1;
     const _playerOne = Player(1, 'X');
     const _playerTwo = Player(2, 'O');
-    const turnAdvnace = () => {
-        console.log("Next turn (turn number " + _turnCount);
-        _incrementTurnCounter();
-    }
     const _incrementTurnCounter = () => ++_turnCount;
-    const attachEventListeners = () => {
+    const _attachEventListeners = () => {
         let gameSquares = document.querySelectorAll(".game-square");
         gameSquares.forEach((gameSquare, index) => {
             gameSquare.addEventListener("click", () => {
                 GameBoard.updateBoard(index);
             });
         });
+    } // Look into passing the event and using event.target in updateBoard to change the textContent rather than passing an index value
+    const _removeEventListeners = () => {
+        let gameSquares = document.querySelectorAll(".game-square");
+        gameSquares.forEach((gameSquare, index) => {
+            gameSquare.removeEventListener("click", () => {
+                GameBoard.updateBoard(index);
+            });
+        });
     }
-    const getTurnCount = () => _turnCount;
+    // const _handleSquareClick = function(index){
+    //     GameBoard.updateBoard(index);
+    // }
+//////////////////////////////////
+// PUBLIC METHODS AND ATTIBUTES //
+//////////////////////////////////
+    
+    const turnAdvnace = () => {
+        console.log("Next turn (turn number " + _turnCount);
+        if (GameBoard.winner()) {
+            endGame();
+        }
+        _incrementTurnCounter();
+    }
     const getCurrentPlayer = () => {
         let currentPlayer;
         if (_turnCount % 2 == 1) {
@@ -80,35 +101,31 @@ const GameController = (() => {
         GameBoard.reset();
         GameBoard.draw();
         _turnCount = 1;
+        _attachEventListeners();
     }
-
-    const declareWinner = () => {
+    const endGame = () => {
+        _removeEventListeners();
+        _declareWinner();
+    }
+    const _declareWinner = () => {
+        let winnerDivElement = document.createElement("h2");
+        let winnerDivText;
         if (_turnCount == 9) {
             console.log("Draw. You both lose. Good day.");
+            winnerDivText = "Draw. You both lose. Good day to you!";
         }
             else {
             let currentPlayer;
             _turnCount % 2 === 1 ? currentPlayer = _playerOne : currentPlayer = _playerTwo;
             console.log("Player " + currentPlayer.getNumber() + " wins!");
+            winnerDivText = "Player " + currentPlayer.getNumber() + " wins!"
         }
+        winnerDivElement.textContent = winnerDivText;
+        document.querySelector(".header").appendChild(winnerDivElement);    
     }
-    
-    // const takeTurn = () => {
-    //     GameBoard.updateBoard(_getPlayerInput(), currentPlayer.getSymbol());
-    //     GameBoard.draw();
-    //     _turnAdvnace();
-    // }
-    return {startGame, declareWinner, turnAdvnace, getTurnCount, getCurrentPlayer, attachEventListeners};
+    return {startGame, turnAdvnace, getCurrentPlayer};
 })();
 
 
 
 GameController.startGame();
-GameController.attachEventListeners();
-if (GameBoard.winner() || GameController.getTurnCount >= 9) {
-    GameController.declareWinner();
-}
-// while (!GameBoard.winner() && GameController.getTurnCount() <= 9) {
-//     GameController.takeTurn();
-// }
-// GameController.declareWinner();
