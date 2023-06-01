@@ -13,18 +13,6 @@ const GameBoard = (() => {
         ' ', ' ', ' ',
         ' ', ' ', ' '
     ];
-    const draw = () => {
-        let i = 1;
-        for (i = 1; i <= boardArray.length; i++) {
-            let gameSquare = document.getElementById("square" + i);
-            if (boardArray[i -1] === 'X') {
-                gameSquare.textContent = 'X';
-            }
-            else if (boardArray[i -1] === 'O') {
-                gameSquare.textContent = 'O';
-            }
-        }
-    }
     const updateBoard = (event) => {
         let player = GameController.getCurrentPlayer();
         const gameSquares = document.getElementById("game").children;
@@ -39,14 +27,6 @@ const GameBoard = (() => {
             }
         }
     }
-    // const updateBoard = (position) => {
-    //     let player = GameController.getCurrentPlayer();
-    //     if (boardArray[position] == ' ') {
-    //         boardArray[position] = player.getSymbol();
-    //         GameController.turnAdvnace();
-    //     }
-    //     draw();
-    // }
     const reset = () => {
         //FIXME: clear board array
     }
@@ -61,7 +41,7 @@ const GameBoard = (() => {
         else if (boardArray[2] === boardArray[4] && boardArray[4] === boardArray[6] && boardArray[6] !== ' ') {return true;}
         else return false;
     }
-    return {draw, updateBoard, reset, winner};
+    return {updateBoard, reset, winner};
 })();
 
 const GameController = (() => {
@@ -75,29 +55,18 @@ const GameController = (() => {
     const _attachEventListeners = () => {
         let gameSquares = document.querySelectorAll(".game-square");
         gameSquares.forEach((gameSquare) => {
-            gameSquare.addEventListener("click", clickHandler);
+            gameSquare.addEventListener("click", _clickHandler);
         })
     }
-    const clickHandler = function (e) {
+    const _clickHandler = function (e) {
         GameBoard.updateBoard(e);
     }
-    // const _attachEventListeners = () => {
-    //     let gameSquares = document.querySelectorAll(".game-square");
-    //     gameSquares.forEach((gameSquare, index) => {
-    //         gameSquare.addEventListener("click", () => {
-    //             GameBoard.updateBoard(index);
-    //         });
-    //     });
-    // } // Look into passing the event and using event.target in updateBoard to change the textContent rather than passing an index value
     const _removeEventListeners = () => {
         let gameSquares = document.querySelectorAll(".game-square");
         gameSquares.forEach((gameSquare) => {
-            gameSquare.removeEventListener("click", clickHandler);
+            gameSquare.removeEventListener("click", _clickHandler);
         });
     }
-    // const _handleSquareClick = function(index){
-    //     GameBoard.updateBoard(index);
-    // }
 //////////////////////////////////
 // PUBLIC METHODS AND ATTIBUTES //
 //////////////////////////////////
