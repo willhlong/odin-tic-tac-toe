@@ -13,7 +13,7 @@ const GameBoard = (() => {
         ' ', ' ', ' ',
         ' ', ' ', ' '
     ];
-    const draw = (updatedPosition, symbol) => {
+    const draw = () => {
         let i = 1;
         for (i = 1; i <= boardArray.length; i++) {
             let gameSquare = document.getElementById("square" + i);
@@ -25,14 +25,28 @@ const GameBoard = (() => {
             }
         }
     }
-    const updateBoard = (position) => {
+    const updateBoard = (event) => {
         let player = GameController.getCurrentPlayer();
-        if (boardArray[position] == ' ') {
-            boardArray[position] = player.getSymbol();
-            GameController.turnAdvnace();
+        const gameSquares = document.getElementById("game").children;
+        let i = 0;
+        for (i = 0; i < gameSquares.length; i++) {
+            if (gameSquares[i] == event.target) {
+                if (boardArray[i] == ' ') {
+                    boardArray[i] = player.getSymbol();
+                    event.target.textContent = player.getSymbol();
+                    GameController.turnAdvnace();
+                }
+            }
         }
-        draw();
     }
+    // const updateBoard = (position) => {
+    //     let player = GameController.getCurrentPlayer();
+    //     if (boardArray[position] == ' ') {
+    //         boardArray[position] = player.getSymbol();
+    //         GameController.turnAdvnace();
+    //     }
+    //     draw();
+    // }
     const reset = () => {
         //FIXME: clear board array
     }
@@ -60,18 +74,25 @@ const GameController = (() => {
     const _incrementTurnCounter = () => ++_turnCount;
     const _attachEventListeners = () => {
         let gameSquares = document.querySelectorAll(".game-square");
-        gameSquares.forEach((gameSquare, index) => {
-            gameSquare.addEventListener("click", () => {
-                GameBoard.updateBoard(index);
-            });
-        });
-    } // Look into passing the event and using event.target in updateBoard to change the textContent rather than passing an index value
+        gameSquares.forEach((gameSquare) => {
+            gameSquare.addEventListener("click", clickHandler);
+        })
+    }
+    const clickHandler = function (e) {
+        GameBoard.updateBoard(e);
+    }
+    // const _attachEventListeners = () => {
+    //     let gameSquares = document.querySelectorAll(".game-square");
+    //     gameSquares.forEach((gameSquare, index) => {
+    //         gameSquare.addEventListener("click", () => {
+    //             GameBoard.updateBoard(index);
+    //         });
+    //     });
+    // } // Look into passing the event and using event.target in updateBoard to change the textContent rather than passing an index value
     const _removeEventListeners = () => {
         let gameSquares = document.querySelectorAll(".game-square");
-        gameSquares.forEach((gameSquare, index) => {
-            gameSquare.removeEventListener("click", () => {
-                GameBoard.updateBoard(index);
-            });
+        gameSquares.forEach((gameSquare) => {
+            gameSquare.removeEventListener("click", clickHandler);
         });
     }
     // const _handleSquareClick = function(index){
@@ -99,7 +120,6 @@ const GameController = (() => {
     }
     const startGame = () => {
         GameBoard.reset();
-        GameBoard.draw();
         _turnCount = 1;
         _attachEventListeners();
     }
